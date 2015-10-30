@@ -1,0 +1,385 @@
+#!/bin/bash
+
+if [ ! -f ~/.time-machine/time_machine.txt ]; then
+  export last=undefined
+  export latest=undefined
+  export num=null
+  echo ""
+  echo " ＃ \"time-machine\" is having problem. Please run \"time-machine doctor\"."
+  echo ""
+else
+  export last=$(tail -2 ~/.time-machine/time_machine.txt | head -1)
+  export latest=$(tail -1 ~/.time-machine/time_machine.txt | head -1)
+  export num=$(echo $(wc -l < ~/.time-machine/time_machine.txt))
+fi
+json=$(tmutil status)
+status=$(echo $json | sed 's/.*Running = \([^ ]*\);.*/\1/')
+
+if [ $# -eq 0 ]; then
+  echo ""
+  echo "Please specify your usage: \"time-machine <usage>\""
+  echo " ＊ backup [-b]"
+  echo " ＊ create [-c]"
+  echo " ＊ delete [-d]"
+  echo " ＊ doctor [-m]"
+  echo " ＊ final [-f]"
+  echo " ＊ help [-h]"
+  echo " ＊ init [-i]"
+  echo " ＊ list [-l]"
+  echo " ＊ now [-n]"
+  echo " ＊ revert [-r]"
+  echo " ＊ status [-s]"
+  echo " ＊ terminate [-t]"
+  echo ""
+  exit 1
+elif [[ "$@" == "-h" ]] || [[ "$@" == "help" ]]; then
+  echo ""
+  echo "\"time-machine\" helps you to assign a backup name to every revision of your Time Machine backups. When you want to review your files and folder in Time Machine, it eases you by assigning a static name to your backup, so that you won't need to remember the time you made changes to your OS X. \"time-machine\" works by creating a hidden text file named \".Time_Machine.txt\" with transparent icon on your desktop, whenever you create a new backup with a backup name using this tool, it will assign that name into \"~/Desktop/.Time_Machine.txt\". When you use Time Machine to review old files and folders, just navigate to your \"Desktop\" folder in your Finder's sidebar, click on \".Time_Machine.txt\", then press space bar on your keyboard to view your backup name. You might need to have \"AppleShowAllFiles\" toggled on for this tool to work best."
+  echo ""
+  echo "Usage of \"time-machine <usage>\":"
+  echo " ＊ backup [-b] - Backup using Time Machine after creating a new backup name."
+  echo " ＊ create [-c] - Create a new backup name."
+  echo " ＊ delete [-d] - Revert to last backup name without stopping ongoing TM."
+  echo " ＊ doctor [-m] - Check for problem(s) of \"time-machine\" if any."
+  echo " ＊ final [-f] - List latest backup name."
+  echo " ＊ help [-h] - Manual page for \"time-machine\"."
+  echo " ＊ init [-i] - Initialization / Reinstallation / Repairation of \"time-machine\"."
+  echo " ＊ list [-l] - List all previous backup name."
+  echo " ＊ now [-n] - Backup using Time Machine without creating a new backup name."
+  echo " ＊ revert [-r] - Revert to last backup name and stop ongoing TM if running."
+  echo " ＊ status [-s] - Check the backup status of Time Machine."
+  echo " ＊ terminate [-t] - Terminate ongoing Time Machine backup."
+  echo ""
+  echo "Reminder: If you create a new backup name while Time Machine has already started running, Your new backup name will not be registered into the ongoing backup."
+  echo ""
+  exit 0
+elif [[ "$@" == "-i" ]] || [[ "$@" == "init" ]]; then
+  if [ ! -d ~/.time-machine/ ]; then
+    mkdir ~/.time-machine/
+  fi
+  if [ ! -f /usr/local/bin/time-machine ]; then
+    cp ./transparent.png ~/.time-machine/transparent.png
+    cp ./time-machine ~/.time-machine/time-machine
+    chmod +x ~/.time-machine/time-machine
+    ln -s ~/.time-machine/time-machine /usr/local/bin/time-machine
+    touch ~/Desktop/.Time_Machine.txt
+    touch ~/.time-machine/time_machine.txt
+  else
+    chmod +x ~/.time-machine/time-machine
+    ln -s ~/.time-machine/time-machine /usr/local/bin/time-machine
+    touch ~/Desktop/.Time_Machine.txt
+    touch ~/.time-machine/time_machine.txt
+  fi
+  installed=$(xcode-select -p)
+  if [[ "$installed" =~ ^.*Developer.*$ ]]; then
+    cp ~/.time-machine/transparent.png ~/Desktop/transparent.png
+    sips -i ~/Desktop/transparent.png
+    Derez -only icns transparent.png > tmpicns.rsrc
+    Rez -append tmpicns.rsrc -o ~/Desktop/.Time_Machine.txt
+    SetFile -a C ~/Desktop/.Time_Machine.txt
+    rm -f ~/Desktop/tmpicns.rsrc
+    echo "Initialization and installation of \"time-machine\" completed."
+    echo "Enter \"time-machine help\" for more information."
+  else
+    echo "Initialization and installation of \"time-machine\" completed."
+    echo "Enter \"time-machine help\" for more information."
+    echo "Warning: To have transparent icon of .Time_Machine.txt on desktop, you need to have \"Command Line Develepoer Tools\" installed. You can install it with \"xcode-select --install\", After you have done installed, rerun \"time-machine init\" to have transparent icon of .Time_Machine.txt on your desktop."
+  fi
+  exit 0
+elif [[ "$@" == "-m" ]] || [[ "$@" == "doctor" ]]; then
+  if [ ! -d ~/.time-machine/ ]; then
+    echo "~./.time-machine/ is missing."
+    echo "Reinstall \"time-machine\" using \"time-machine init\" to fix the problem."
+  fi
+  if [ ! -f /usr/local/bin/time-machine ]; then
+    echo "/usr/local/bin/time-machine is missing."
+    echo "Reinstall \"time-machine\" using \"time-machine init\" to fix the problem."
+  fi
+  if [ ! -f ~/.time-machine/transparent.png ]; then
+    echo "~/.time-machine/transparent.png is missing."
+    echo "Reinstall \"time-machine\" using \"time-machine init\" to fix the problem."
+  fi
+  if [ ! -f ~/.time-machine/time-machine ]; then
+    echo "~/.time-machine/time-machine is missing."
+    echo "Reinstall \"time-machine\" using \"time-machine init\" to fix the problem."
+  fi
+  if [ ! -f ~/Desktop/.Time_Machine.txt ]; then
+    echo "~/Desktop/.Time_Machine.txt is missing."
+    echo "Reinstall \"time-machine\" using \"time-machine init\" to fix the problem."
+  fi
+  if [ ! -f ~/.time-machine/time_machine.txt ]; then
+    echo "~/.time-machine/time_machine.txt is missing."
+    echo "Reinstall \"time-machine\" using \"time-machine init\" to fix the problem."
+  fi
+  exit 0
+elif [[ "$@" == "-s" ]] || [[ "$@" == "status" ]]; then
+  if [ "$status" == "0" ]; then
+    echo "Time Machine is not running currently."
+    exit 0
+  elif [ "$status" == "1" ]; then
+    echo "Time Machine is running currently."
+    exit 0
+  fi
+elif [[ "$@" == "-l" ]] || [[ "$@" == "list" ]]; then
+  if [ "$num" == "0" ]; then
+    echo "You have no any previous backup name."
+    echo "Create one using \"time-machine backup\" or \"time-machine create\"."
+    exit 1
+  elif [ "$num" == "null" ]; then
+    exit 1
+  else
+    cat ~/.time-machine/time_machine.txt
+    echo "You have" "$num" "backup name(s)."
+    exit 0
+  fi
+elif [[ "$@" == "-f" ]] || [[ "$@" == "final" ]]; then
+  if [ "$num" == "0" ]; then
+    echo "You have no any previous backup name."
+    echo "Create one using \"time-machine backup\" or \"time-machine create\"."
+    exit 1
+  elif [ "$num" == "null" ]; then
+    exit 1
+  else
+    cat ~/Desktop/.Time_Machine.txt
+    echo "You have" "$num" "backup name(s)."
+    exit 0
+  fi
+elif [[ "$@" == "-n" ]] || [[ "$@" == "now" ]]; then
+  if [ "$status" == "0" ]; then
+    echo "This will initiate Time Machine backup without creating new backup name."
+    echo -n "Initiate Time Machine backup now [Y/n]? "
+    read now
+    if [ -z "$now" ] || [[ $now =~ ^[Yy]$ ]]; then
+      tmutil startbackup
+      echo "Time Machine backup is now running..."
+      exit 0
+    else
+      echo "Time Machine backup is not started."
+      exit 1
+    fi
+  elif [ "$status" == "1" ]; then
+    echo "Operation failed. Time Machine is already running..."
+    exit 1
+  fi
+elif [[ "$@" == "-t" ]] || [[ "$@" == "terminate" ]]; then
+  if [ "$status" == "1" ]; then
+    echo -n "Terminate ongoing Time Machine backup [Y/n]? "
+    read terminate
+    if [ -z "$terminate" ] || [[ $terminate =~ ^[Yy]$ ]]; then
+      tmutil stopbackup
+      echo "Time Machine backup is terminated."
+      exit 0
+    else
+      echo "Time Machine backup is still running..."
+      exit 1
+    fi
+  elif [ "$status" == "0" ]; then
+    echo "Operation failed. Time Machine is not running."
+    exit 1
+  fi
+elif [[ "$@" == "-c" ]] || [[ "$@" == "create" ]]; then
+  echo -n "New backup name: "
+  read name
+  echo "$(date +%Y%m%d%H%M%S)": "$name"
+  echo -n "The above new backup name will be created. Confirm [Y/n]? "
+  read yn
+  if [ -z "$yn" ] || [[ $yn =~ ^[Yy]$ ]]; then
+    echo "$(date +%Y%m%d%H%M%S)": "$name" > ~/Desktop/.Time_Machine.txt
+    echo "$(date +%Y%m%d%H%M%S)": "$name" >> ~/.time-machine/time_machine.txt
+    echo "Successfully created your new backup name."
+    echo "Please proceed to start Time Machine backup using \"time-machine now\"."
+    exit 0
+  else
+    echo "Creation of your new backup name is terminated."
+    exit 1
+  fi
+elif [[ "$@" == "-d" ]] || [[ "$@" == "delete" ]]; then
+  if [ "$num" == "0" ]; then
+    echo "You have not created any backup name yet."
+    echo "Please create one before you could revert to your last backup name."
+    exit 1
+  elif [ "$num" == "null" ]; then
+    exit 1
+  elif [ "$num" == "1" ]; then
+    echo "Sole backup name:" "$latest"
+    echo -n "You have only one backup name left. Delete [Y/n]? "
+    read ny1
+    if [ -z "$ny1" ] || [[ $ny1 =~ ^[Yy]$ ]]; then
+      > ~/.time-machine/time_machine.txt
+      > ~/Desktop/.Time_Machine.txt
+      echo "Successfully deleted your sole backup name!"
+      echo "Please create a new backup name before proceeding to backup using Time Machine."
+      exit 0
+    else
+      echo "Deletion of your sole backup name is terminated."
+      exit 1
+    fi
+  else
+    echo "Last backup name:" "$last"
+    echo "Latest backup name:" "$latest"
+    echo -n "Are you sure you want to revert to your last backup name [Y/n]? "
+    read ny2
+    if [ -z "$ny2" ] || [[ $ny2 =~ ^[Yy]$ ]]; then
+      sed -i '' -e '$ d' ~/.time-machine/time_machine.txt
+      sed -i '' -e '$ d' ~/.time-machine/time_machine.txt
+      echo $last >> ~/.time-machine/time_machine.txt
+      echo $last > ~/Desktop/.Time_Machine.txt
+      echo "Successfully reverted to your last backup name!"
+      echo "Please create a new backup name before proceeding to backup using Time Machine."
+      exit 0
+    else
+      echo "Revertion to your last backup name is terminated."
+      exit 1
+    fi
+  fi
+elif [[ "$@" == "-b" ]] || [[ "$@" == "backup" ]]; then
+  echo "This will create a new backup name and start Time Machine backup instantly."
+  echo -n "Confirm [Y/n]? "
+  read backup
+  if [ -z "$backup" ] || [[ $backup =~ ^[Yy]$ ]]; then
+    echo -n "New backup name: "
+    read new
+    echo "$(date +%Y%m%d%H%M%S)": "$new"
+    echo -n "The above new backup name will be created. Confirm [Y/n]? "
+    read yn
+    if [ -z "$yn" ] || [[ $yn =~ ^[Yy]$ ]]; then
+      if [ "$status" == "1" ]; then
+        echo "Time Machine (TM) is running currently."
+        echo -n "Enter t to terminate TM and start TM again with this backup name, c to create backup name only without terminating TM, or n to cancel this operation. "
+        read option
+        if [[ $option =~ ^[Tt]$ ]]; then
+          tmutil stopbackup
+          echo "Time Machine is terminated!"
+          echo "$(date +%Y%m%d%H%M%S)": "$new" > ~/Desktop/.Time_Machine.txt
+          echo "$(date +%Y%m%d%H%M%S)": "$new" >> ~/.time-machine/time_machine.txt
+          echo "Successfully created your new backup name."
+          tmutil startbackup
+          echo "Time Machine backup is now running..."
+          exit 0
+        elif [[ $option =~ ^[Cc]$ ]]; then
+          echo "Time Machine is still running..."
+          echo "$(date +%Y%m%d%H%M%S)": "$new" > ~/Desktop/.Time_Machine.txt
+          echo "$(date +%Y%m%d%H%M%S)": "$new" >> ~/.time-machine/time_machine.txt
+          echo "Successfully created your new backup name."
+          echo "Your new backup name is not registered into ongoing Time Machine backup."
+          exit 0
+        else
+          echo "Creation of your new backup name is terminated."
+          echo "Time Machine backup is not started."
+          exit 1
+        fi
+      elif [ "$status" == "0" ]; then
+        echo "$(date +%Y%m%d%H%M%S)": "$new" > ~/Desktop/.Time_Machine.txt
+        echo "$(date +%Y%m%d%H%M%S)": "$new" >> ~/.time-machine/time_machine.txt
+        echo "Successfully created your new backup name."
+        tmutil startbackup
+        echo "Time Machine backup is now running..."
+        exit 0
+      fi
+    else
+      echo "Creation of your new backup name is terminated."
+      echo "Time Machine backup is not started."
+      exit 1
+    fi
+  else
+    echo "Nothing changed."
+    echo "Please create a new backup name before proceeding to backup using Time Machine."
+    exit 1
+  fi
+elif [[ "$@" == "-r" ]] || [[ "$@" == "revert" ]]; then
+  if [ "$num" == "0" ]; then
+    echo "You have not created any backup name yet."
+    echo "Please create one before you could revert to your last backup name."
+    exit 1
+  elif [ "$num" == "null" ]; then
+    exit 1
+  elif [ "$num" == "1" ]; then
+    echo "Sole backup name:" "$latest"
+    echo -n "You have only one backup name left. Delete [Y/n]? "
+    read yn1
+    if [ -z "$yn1" ] || [[ $yn1 =~ ^[Yy]$ ]]; then
+      if [ "$status" == "1" ]; then
+        echo -n "Time Machine is running currently. Terminate [Y/n]? "
+        read tm1
+        if [ -z "$tm1" ] || [[ $tm1 =~ ^[Yy]$ ]]; then
+          tmutil stopbackup
+          echo "Time Machine is terminated!"
+          > ~/.time-machine/time_machine.txt
+          > ~/Desktop/.Time_Machine.txt
+          echo "Successfully deleted your sole backup name!"
+          echo "Please create a new backup name before proceeding to backup using Time Machine."
+          exit 0
+        else
+          echo "Time Machine is still running..."
+          echo "Deletion of your sole backup name is terminated."
+          echo "Please stop Time Machine using \"time-machine terminate\" before you could delete your sole backup name."
+          exit 1
+        fi
+      elif [ "$status" == "0" ]; then
+        > ~/.time-machine/time_machine.txt
+        > ~/Desktop/.Time_Machine.txt
+        echo "Successfully deleted your sole backup name!"
+        echo "Please create a new backup name before proceeding to backup using Time Machine."
+        exit 0
+      fi
+    else
+      echo "Deletion of your sole backup name is terminated."
+      exit 1
+    fi
+  else
+    echo "Last backup name:" "$last"
+    echo "Latest backup name:" "$latest"
+    echo -n "Are you sure you want to revert to your last backup name [Y/n]? "
+    read yn2
+    if [ -z "$yn2" ] || [[ $yn2 =~ ^[Yy]$ ]]; then
+      if [ "$status" == "1" ]; then
+        echo -n "Time Machine is running currently. Terminate [Y/n]? "
+        read tm2
+        if [ -z "$tm2" ] || [[ $tm2 =~ ^[Yy]$ ]]; then
+          tmutil stopbackup
+          echo "Time Machine is terminated!"
+          sed -i '' -e '$ d' ~/.time-machine/time_machine.txt
+          sed -i '' -e '$ d' ~/.time-machine/time_machine.txt
+          echo $last >> ~/.time-machine/time_machine.txt
+          echo $last > ~/Desktop/.Time_Machine.txt
+          echo "Successfully reverted to your last backup name!"
+          echo "Please create a new backup name before proceeding to backup using Time Machine."
+          exit 0
+        else
+          echo "Time Machine is still running..."
+          echo "Revertion to your last backup name is terminated."
+          echo "Please stop Time Machine using \"time-machine terminate\" before you could revert to your last backup name."
+          exit 1
+        fi
+      elif [ "$status" == "0" ]; then
+        sed -i '' -e '$ d' ~/.time-machine/time_machine.txt
+        sed -i '' -e '$ d' ~/.time-machine/time_machine.txt
+        echo $last >> ~/.time-machine/time_machine.txt
+        echo $last > ~/Desktop/.Time_Machine.txt
+        echo "Successfully reverted to your last backup name!"
+        echo "Please create a new backup name before proceeding to backup using Time Machine."
+        exit 0
+      fi
+    else
+      echo "Revertion to your last backup name is terminated."
+      exit 1
+    fi
+  fi
+else
+  echo ""
+  echo "Please specify your usage correctly: \"time-machine <usage>\""
+  echo " ＊ backup [-b]"
+  echo " ＊ create [-c]"
+  echo " ＊ delete [-d]"
+  echo " ＊ doctor [-m]"
+  echo " ＊ final [-f]"
+  echo " ＊ help [-h]"
+  echo " ＊ init [-i]"
+  echo " ＊ list [-l]"
+  echo " ＊ now [-n]"
+  echo " ＊ revert [-r]"
+  echo " ＊ status [-s]"
+  echo " ＊ terminate [-t]"
+  echo ""
+  exit 1
+fi
