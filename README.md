@@ -36,4 +36,4 @@ time-machine help
 - terminate [-t] - Terminate ongoing Time Machine backup.
 
 ### Reminder:
-`If you create a new backup name while Time Machine has already started running, Your new backup name will not be registered into the ongoing backup.`
+- If you create a new backup name while Time Machine has already started running, Your new backup name will not be registered into the ongoing backup.
