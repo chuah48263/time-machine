@@ -17,7 +17,7 @@ git clone https://github.com/chuah48263/time-machine.git ~/.time-machine/ && cd 
 
 # Usage
 
-### time-machine \<usage>
+### time-machine \<usage>:
 - backup [-b] - Backup using Time Machine after creating a new backup name.
 - create [-c] - Create a new backup name.
 - delete [-d] - Revert to last backup name without stopping ongoing TM.
