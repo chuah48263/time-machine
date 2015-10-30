@@ -8,6 +8,11 @@ When you want to review your files and folder in Time Machine, it eases you by a
 
 When you use Time Machine to review old files and folders, just navigate to your "Desktop" folder in your Finder's sidebar, click on ".Time_Machine.txt", then press space bar on your keyboard to view your backup name. You might need to have "AppleShowAllFiles" toggled on for this tool to work best.
 
+# Installation
+
+Install by using the following command in your teminal:
+`git clone https://github.com/chuah48263/time-machine.git ~/.time-machine/ && cd ~/.time-machine/ && chmod +x time-machine && ./time-machine`
+
 # Usage
 
 ### time-machine \<usage>
