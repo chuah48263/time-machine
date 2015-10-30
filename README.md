@@ -12,7 +12,7 @@ When you use Time Machine to review old files and folders, just navigate to your
 
 Install by issuing the following command in your teminal:
 ```
-git clone https://github.com/chuah48263/time-machine.git ~/.time-machine/ && cd ~/.time-machine/ && chmod +x time-machine && ./time-machine init`
+git clone https://github.com/chuah48263/time-machine.git ~/.time-machine/ && cd ~/.time-machine/ && chmod +x time-machine && ./time-machine init
 ```
 
 # Usage
