@@ -1,4 +1,4 @@
-# time-machine - Tool to add name to Time Machine backups
+# time-machine
 
 "time-machine" is a bash command which helps you to assign a backup name to every revision of your Time Machine backups.
 
@@ -10,7 +10,7 @@ When you use Time Machine to review old files and folders, just navigate to your
 
 # Usage
 
-### time-machine <usage\>
+### time-machine \<usage>
 - backup [-b] - Backup using Time Machine after creating a new backup name."
 - create [-c] - Create a new backup name."
 - delete [-d] - Revert to last backup name without stopping ongoing TM."
