@@ -10,9 +10,13 @@ When you use Time Machine to review old files and folders, just navigate to your
 
 # Installation
 
-Install by issuing the following command in your teminal:
+Install "time-machine" by issuing the following command in your teminal:
 ```
 git clone https://github.com/chuah48263/time-machine.git ~/.time-machine/ && cd ~/.time-machine/ && chmod +x time-machine && ./time-machine init
+```
+Then, execute "time-machine" normally:
+```
+time-machine help
 ```
 
 # Usage
@@ -31,5 +35,5 @@ git clone https://github.com/chuah48263/time-machine.git ~/.time-machine/ && cd 
 - status [-s] - Check the backup status of Time Machine.
 - terminate [-t] - Terminate ongoing Time Machine backup.
 
-### Reminder
+### Reminder:
 - If you create a new backup name while Time Machine has already started running, Your new backup name will not be registered into the ongoing backup.
