@@ -10,14 +10,14 @@ When you use Time Machine to review old files and folders, just navigate to your
 
 # Usage
 
-### time-machine <usage>
+### time-machine <usage\>
 - backup [-b] - Backup using Time Machine after creating a new backup name."
 - create [-c] - Create a new backup name."
 - delete [-d] - Revert to last backup name without stopping ongoing TM."
-- doctor [-m] - Check for problem(s) of \"time-machine\" if any."
+- doctor [-m] - Check for problem(s) of "time-machine" if any."
 - final [-f] - List latest backup name."
-- help [-h] - Manual page for \"time-machine\"."
-- init [-i] - Initialization / Reinstallation / Repairation of \"time-machine\"."
+- help [-h] - Manual page for "time-machine"."
+- init [-i] - Initialization / Reinstallation / Repairation of "time-machine"."
 - list [-l] - List all previous backup name."
 - now [-n] - Backup using Time Machine without creating a new backup name."
 - revert [-r] - Revert to last backup name and stop ongoing TM if running."
