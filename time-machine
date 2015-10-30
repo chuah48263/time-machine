@@ -111,6 +111,9 @@ elif [[ "$@" == "-m" ]] || [[ "$@" == "doctor" ]]; then
     echo "~/.time-machine/time_machine.txt is missing."
     echo "Reinstall \"time-machine\" using \"time-machine init\" to fix the problem."
   fi
+  if [ -d ~/.time-machine/ ] && [ -f /usr/local/bin/time-machine ] && [ -f ~/.time-machine/transparent.png ] && [ -f ~/.time-machine/time-machine ] && [ -f ~/Desktop/.Time_Machine.txt ] && [ -f ~/.time-machine/time_machine.txt ]; then
+    echo "You are not even sick. Please proceed to backup if needed."
+  fi
   exit 0
 elif [[ "$@" == "-s" ]] || [[ "$@" == "status" ]]; then
   if [ "$status" == "0" ]; then
