@@ -10,8 +10,10 @@ When you use Time Machine to review old files and folders, just navigate to your
 
 # Installation
 
-Install by using the following command in your teminal:
-`git clone https://github.com/chuah48263/time-machine.git ~/.time-machine/ && cd ~/.time-machine/ && chmod +x time-machine && ./time-machine`
+Install by issuing the following command in your teminal:
+```
+git clone https://github.com/chuah48263/time-machine.git ~/.time-machine/ && cd ~/.time-machine/ && chmod +x time-machine && ./time-machine`
+```
 
 # Usage
 
