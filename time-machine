@@ -74,10 +74,10 @@ elif [[ "$@" == "-i" ]] || [[ "$@" == "init" ]]; then
   if [[ "$installed" =~ ^.*Developer.*$ ]]; then
     cp ~/.time-machine/transparent.png ~/Desktop/transparent.png
     sips -i ~/Desktop/transparent.png
-    Derez -only icns transparent.png > tmpicns.rsrc
-    Rez -append tmpicns.rsrc -o ~/Desktop/.Time_Machine.txt
+    Derez -only icns ~/Desktop/transparent.png > ~/Desktop/tmpicns.rsrc
+    Rez -append ~/Desktop/tmpicns.rsrc -o ~/Desktop/.Time_Machine.txt
     SetFile -a C ~/Desktop/.Time_Machine.txt
-    rm -f ~/Desktop/tmpicns.rsrc
+    rm -f ~/Desktop/tmpicns.rsrc ~/Desktop/transparent.png
     echo "Initialization and installation of \"time-machine\" completed."
     echo "Enter \"time-machine help\" for more information."
   else
